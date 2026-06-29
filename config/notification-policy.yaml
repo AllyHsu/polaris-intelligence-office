@@ -1,0 +1,52 @@
+# Polaris Notification Hub policy.
+# Notification Hub does not search external sources. It only summarizes downstream Polaris reports.
+
+priority_levels:
+  high:
+    label: High
+    definition: Requires action, registration, reply, or decision today or within 48 hours.
+    default_action: Act today.
+  medium:
+    label: Medium
+    definition: Worth reading, tracking, or organizing into the knowledge base this week.
+    default_action: Schedule time this week.
+  low:
+    label: Low
+    definition: For reference only; no immediate handling required.
+    default_action: File or ignore unless it becomes relevant.
+  no_notification:
+    label: No Notification
+    definition: No important updates; do not notify.
+    default_action: No action.
+
+scoring_fields:
+  urgency:
+    description: Time sensitivity and deadline pressure.
+  business_value:
+    description: Relevance to business goals, relationships, opportunities, or risks.
+  insurance_relevance:
+    description: Connection to insurance strategy, products, distribution, claims, regulation, or customer needs.
+  ai_agent_relevance:
+    description: Connection to AI agents, automation, enterprise AI, or applied AI workflows.
+  learning_value:
+    description: Usefulness for learning, reference, or future knowledge work.
+  actionability:
+    description: Clarity of next step, owner, and expected outcome.
+
+classification_rules:
+  - If an item needs action today or within 48 hours, classify as High.
+  - If an item is useful this week but does not require immediate action, classify as Medium.
+  - If an item is context only, classify as Low.
+  - If no High, Medium, or useful FYI items exist, classify the day as No Notification.
+  - Missing source access must be called out as source status, not treated as an update.
+
+output_sections:
+  - date
+  - today_summary
+  - high_priority
+  - medium_priority
+  - fyi
+  - mail_watch
+  - recommended_reading_time
+  - today_recommended_actions
+  - sync_to_knowledge_hub

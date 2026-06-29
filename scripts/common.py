@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-SUPPORTED_AGENTS = ("event-radar", "insurance-brief", "mail-watch", "daily")
+SUPPORTED_AGENTS = ("event-radar", "insurance-brief", "mail-watch", "daily", "notification-hub")
 
 
 def read_text(path: str | Path) -> str:

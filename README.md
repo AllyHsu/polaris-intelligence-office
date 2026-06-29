@@ -4,10 +4,27 @@ Polaris Intelligence Office is a local Codex-first intelligence workspace. GitHu
 
 ## Agents
 
+- `notification-hub`: The single notification entry point for Polaris Intelligence Office.
 - `event-radar`: Tracks public events, signals, and industry movements.
 - `insurance-brief`: Produces concise insurance market and product briefs.
 - `mail-watch`: Summarizes priority mail themes and possible follow-ups.
 - `daily`: Optional roll-up brief across Polaris outputs.
+
+## Notification Hub Principle
+
+Polaris Notification Hub is the only entry point for daily attention. It does not search external sources again. It summarizes downstream signals from:
+
+- Polaris Event Radar
+- Polaris Insurance Brief
+- Polaris Mail Watch
+
+Notification Hub answers three questions:
+
+1. Is there anything important today?
+2. What is the most important item?
+3. What should I do today?
+
+ChatGPT scheduling, if used, belongs only to the notification layer: reminding, nudging, and asking whether to review the latest Notification Hub output. Codex plus GitHub is the knowledge layer: Codex reads and writes the reports, while GitHub stores version history.
 
 ## Local Codex Workflow
 
@@ -23,6 +40,7 @@ The Python runner is available for creating report shells and checking the folde
 python scripts/run_polaris.py event-radar
 python scripts/run_polaris.py insurance-brief
 python scripts/run_polaris.py mail-watch
+python scripts/run_polaris.py notification-hub
 ```
 
 Each run writes a dated Markdown report to:

@@ -2,6 +2,29 @@
 
 This runbook keeps Polaris Intelligence Office simple: run agents locally in Codex, write Markdown reports, and use GitHub only to version the repo.
 
+## Daily Notification Hub First SOP
+
+1. Open Codex in the Polaris workspace.
+2. Ask Codex to read `agents/notification-hub.yaml`, `prompts/polaris-notification-hub.md`, and `config/notification-policy.yaml`.
+3. Ask Codex to review only the latest downstream Polaris reports:
+   - `reports/event-radar/`
+   - `reports/insurance-brief/`
+   - `reports/mail-watch/`
+4. Do not ask Notification Hub to search the web or mailbox again.
+5. Save the report to:
+
+```text
+reports/notification-hub/YYYY-MM-DD.md
+```
+
+6. Review the priority:
+   - High: act today or within 48 hours. Register, reply, decide, or schedule a concrete next step.
+   - Medium: read, track, or organize into the knowledge base this week.
+   - Low: keep as FYI. No immediate action required.
+   - No Notification: no important update. Do not interrupt the day.
+7. If a High item exists, handle it before running deeper research.
+8. If an item should be retained, mark whether it needs to sync to Knowledge Hub.
+
 ## Weekly Thursday Event Radar SOP
 
 1. Open Codex in the Polaris workspace.
@@ -61,6 +84,7 @@ reports/mail-watch/YYYY-MM-DD.md
 - Event Radar reports go to `reports/event-radar/YYYY-MM-DD.md`.
 - Insurance Brief reports go to `reports/insurance-brief/YYYY-MM-DD.md`.
 - Mail Watch reports go to `reports/mail-watch/YYYY-MM-DD.md`.
+- Notification Hub reports go to `reports/notification-hub/YYYY-MM-DD.md`.
 - Every report should include a source status section.
 - If source access is missing, write a clear TODO instead of filling gaps with guesses.
 - Do not commit Python cache files, virtual environments, or local secrets.

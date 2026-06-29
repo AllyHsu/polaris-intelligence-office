@@ -35,6 +35,13 @@ def build_fallback_report(agent: dict[str, str], prompt: str, template: str) -> 
         "events": "- No event-radar output available.",
         "insurance": "- No insurance-brief output available.",
         "mail": "- No mail-watch output available.",
+        "high_priority": "- No High priority items available.",
+        "medium_priority": "- No Medium priority items available.",
+        "fyi": "- No FYI items available.",
+        "mail_watch": "- No Mail Watch items available.",
+        "recommended_reading_time": "0 minutes.",
+        "today_recommended_actions": "- No action recommended without downstream source reports.",
+        "sync_to_knowledge_hub": "No. No verified item is ready to sync.",
     }
     rendered = template.format(**common_values)
     return rendered + "\n\n<!-- Prompt loaded for this run; omitted from fallback output to keep the report concise. -->\n"

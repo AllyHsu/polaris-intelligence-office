@@ -1,0 +1,11 @@
+name: notification-hub
+mission: Summarize Polaris downstream signals into a daily notification decision and next action.
+schedule: daily_morning
+output_dir: reports/notification-hub
+prompt_file: prompts/polaris-notification-hub.md
+template_file: templates/notification-hub-report.md
+policy_file: config/notification-policy.yaml
+inputs:
+  - reports/event-radar
+  - reports/insurance-brief
+  - reports/mail-watch
