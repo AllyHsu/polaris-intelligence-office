@@ -1,0 +1,7 @@
+name: insurance-brief
+mission: Produce concise insurance market and product intelligence briefs for planning and follow-up.
+schedule: weekdays_0730
+output_dir: reports/insurance-brief
+prompt_file: prompts/polaris-insurance-brief.md
+template_file: templates/insurance-brief-report.md
+

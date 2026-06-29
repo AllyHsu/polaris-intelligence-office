@@ -1,0 +1,27 @@
+name: Polaris Insurance Brief
+
+on:
+  schedule:
+    - cron: "30 23 * * 0-4"
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run insurance brief
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/run_polaris.py insurance-brief
+      - name: Commit report
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Add Polaris insurance brief report"
+          file_pattern: reports/insurance-brief/*.md
+

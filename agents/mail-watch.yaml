@@ -1,0 +1,7 @@
+name: mail-watch
+mission: Monitor priority mail themes and summarize items that may require attention or response.
+schedule: weekdays_0800
+output_dir: reports/mail-watch
+prompt_file: prompts/polaris-mail-watch.md
+template_file: templates/mail-watch-report.md
+

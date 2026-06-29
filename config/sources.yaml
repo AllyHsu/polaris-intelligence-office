@@ -1,0 +1,8 @@
+# Data source configuration for Polaris Intelligence Office.
+# TODO: Add approved search, website, mailbox, calendar, CRM, or document sources.
+sources:
+  event-radar: []
+  insurance-brief: []
+  mail-watch: []
+  daily: []
+

@@ -1,0 +1,7 @@
+name: daily
+mission: Compile a daily operating brief across event radar, insurance, mail, and key follow-ups.
+schedule: daily_0830
+output_dir: reports/daily
+prompt_file: prompts/polaris-daily.md
+template_file: templates/daily-report.md
+
