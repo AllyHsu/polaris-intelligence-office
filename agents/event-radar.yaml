@@ -1,0 +1,13 @@
+id: polaris-event-radar
+name: Polaris Event Radar
+owner: ally
+schedule: weekly_thursday
+output_dir: reports/event-radar
+prompt_file: prompts/polaris-event-radar.md
+mission: >
+  Search for new AI events, forums, webinars, conferences, and seminars.
+  Prioritize Taiwan and APAC, then major global events relevant to AI agents,
+  enterprise AI, insurance/financial AI, data platforms, and analytics.
+notification_rule: >
+  Only produce a meaningful notification when there are important new or upcoming events.
+  If nothing is important, write a short report saying no notification is needed.
