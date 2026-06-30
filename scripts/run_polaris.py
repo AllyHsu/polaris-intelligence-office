@@ -16,18 +16,18 @@ from report_writer import write_report
 OPENAI_URL = "https://api.openai.com/v1/responses"
 
 
-def build_fallback_report(agent: dict[str, str], prompt: str, template: str) -> str:
-    today = date.today().isoformat()
-    source_status = (
-        "Live source collection was not performed. "
-        "TODO: connect approved search, mail, document, or business data sources before treating this report as intelligence."
-    )
-    common_values = {
-        "report_date": today,
-        "summary": f"No live data was collected for `{agent['name']}` on {today}. This is a mock fallback shell only.",
+def fallback_details(agent_name: str) -> dict[str, str]:
+    details = {
+        "source_status": (
+            "No approved live source connector is configured for this agent yet. "
+            "No external facts were collected in this run."
+        ),
+        "today_result": "No verified updates are available from configured sources.",
+        "notification_status": "No Notification. There is no verified item requiring attention.",
+        "next_steps": "- Configure approved sources before treating this report as intelligence.",
+        "summary": "No verified source data is available for this run.",
         "signals": "- No verified live signals available.",
         "open_questions": "- Which approved sources should this agent query?",
-        "source_status": source_status,
         "implications": "- No implications can be drawn without source data.",
         "follow_ups": "- Configure sources and rerun the agent.",
         "needs_attention": "- No mailbox data available.",
@@ -40,11 +40,80 @@ def build_fallback_report(agent: dict[str, str], prompt: str, template: str) -> 
         "fyi": "- No FYI items available.",
         "mail_watch": "- No Mail Watch items available.",
         "recommended_reading_time": "0 minutes.",
-        "today_recommended_actions": "- No action recommended without downstream source reports.",
+        "today_recommended_actions": "- No action recommended without verified source reports.",
         "sync_to_knowledge_hub": "No. No verified item is ready to sync.",
     }
+
+    if agent_name in ("event-radar", "Polaris Event Radar"):
+        details.update(
+            {
+                "source_status": "External search sources are not connected yet. No live event search was performed.",
+                "today_result": "No verifiable important new AI, agent, insurance AI, data, analytics, cloud, or platform events are available from configured sources.",
+                "notification_status": "No Notification. There is no verified event requiring attention today.",
+                "next_steps": "- Connect approved external search sources.\n- Rerun Event Radar after sources are available.\n- Keep any unverified event leads out of the report until they can be cited.",
+                "summary": "External event search is not connected yet, so this report contains only a source-status fallback.",
+                "signals": "- No verified important new events available.",
+                "open_questions": "- Which event sources should be approved for Event Radar?",
+            }
+        )
+    elif agent_name == "insurance-brief":
+        details.update(
+            {
+                "source_status": "External news and insurance AI sources are not connected yet. No live insurance intelligence collection was performed.",
+                "today_result": "No verifiable important insurance, market, regulatory, product, distribution, claims, or insurance AI intelligence is available from configured sources.",
+                "notification_status": "No Notification. There is no verified insurance intelligence item requiring attention today.",
+                "next_steps": "- Connect approved insurance news, regulator, insurer, and AI source feeds.\n- Rerun Insurance Brief after sources are available.\n- Do not add market claims without citations.",
+                "summary": "Insurance and insurance AI source collection is not connected yet, so this report contains only a source-status fallback.",
+                "signals": "- No verified insurance or insurance AI signals available.",
+                "implications": "- No implications can be drawn without verified source data.",
+                "follow_ups": "- Approve insurance market and AI sources for future runs.",
+            }
+        )
+    elif agent_name == "mail-watch":
+        details.update(
+            {
+                "source_status": "Gmail or email data sources are not connected yet. No mailbox review was performed.",
+                "today_result": "No actionable email, reply, deadline, or decision item can be determined from configured sources.",
+                "notification_status": "No Notification. There is no verified email item requiring attention today.",
+                "next_steps": "- Connect or provide approved email summaries.\n- Rerun Mail Watch after mailbox access or input is available.\n- Do not copy sensitive full email bodies into reports.",
+                "summary": "Mailbox collection is not connected yet, so this report contains only a source-status fallback.",
+                "needs_attention": "- No actionable email items available.",
+                "waiting_or_fyi": "- No waiting or FYI email items available.",
+                "follow_ups": "- Provide approved mailbox access or safe email summaries.",
+            }
+        )
+    elif agent_name == "notification-hub":
+        details.update(
+            {
+                "source_status": "Notification Hub has not read actual Event Radar, Insurance Brief, or Mail Watch results in this runner path yet.",
+                "today_result": "There is no verified downstream signal available for Notification Hub to evaluate.",
+                "notification_status": "No Notification. There is no basis for High or Medium priority today.",
+                "next_steps": "- Run or provide the latest Event Radar, Insurance Brief, and Mail Watch reports.\n- Update Notification Hub to read downstream reports before making priority decisions.\n- Keep High and Medium empty until there is verified downstream evidence.",
+                "summary": "Notification Hub has not read actual downstream report results yet.",
+                "high_priority": "- None. There is no verifiable basis for High Priority.",
+                "medium_priority": "- None. There is no verifiable basis for Medium Priority.",
+                "fyi": "- No verified FYI items available.",
+                "mail_watch": "- No verified Mail Watch items available.",
+                "recommended_reading_time": "0 minutes.",
+                "today_recommended_actions": "- No action recommended until downstream reports are available and reviewed.",
+                "sync_to_knowledge_hub": "No. No verified downstream item is ready to sync.",
+            }
+        )
+    return details
+
+
+def build_fallback_report(agent: dict[str, str], prompt: str, template: str) -> str:
+    today = date.today().isoformat()
+    agent_name = agent["name"]
+    details = fallback_details(agent_name)
+    common_values = {
+        "report_date": today,
+        "agent_name": agent_name,
+        "mission": agent.get("mission", "No mission configured."),
+        **details,
+    }
     rendered = template.format(**common_values)
-    return rendered + "\n\n<!-- Prompt loaded for this run; omitted from fallback output to keep the report concise. -->\n"
+    return rendered.rstrip() + "\n"
 
 
 def call_openai(agent: dict[str, str], prompt: str, template: str) -> str:
@@ -99,6 +168,8 @@ def run(agent_name: str) -> Path:
     template_file = agent.get("template_file", f"templates/{agent_name}-report.md")
     template = read_text(ROOT_DIR / template_file)
     report = call_openai(agent, prompt, template)
+    if not report.strip():
+        report = build_fallback_report(agent, prompt, template)
     return write_report(ROOT_DIR / agent["output_dir"], report)
 
 

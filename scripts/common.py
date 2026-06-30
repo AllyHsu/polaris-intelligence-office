@@ -14,12 +14,32 @@ def read_text(path: str | Path) -> str:
 def read_simple_yaml(path: str | Path) -> dict[str, str]:
     """Read the small key/value YAML files used by agent definitions."""
     data: dict[str, str] = {}
-    for raw_line in read_text(path).splitlines():
+    lines = read_text(path).splitlines()
+    index = 0
+    while index < len(lines):
+        raw_line = lines[index]
         line = raw_line.strip()
         if not line or line.startswith("#") or ":" not in line:
+            index += 1
             continue
         key, value = line.split(":", 1)
-        data[key.strip()] = value.strip().strip('"').strip("'")
+        clean_key = key.strip()
+        clean_value = value.strip().strip('"').strip("'")
+        if clean_value in (">", "|"):
+            folded: list[str] = []
+            index += 1
+            while index < len(lines):
+                continuation = lines[index]
+                if continuation and not continuation[0].isspace():
+                    break
+                stripped = continuation.strip()
+                if stripped:
+                    folded.append(stripped)
+                index += 1
+            data[clean_key] = " ".join(folded)
+            continue
+        data[clean_key] = clean_value
+        index += 1
     return data
 
 
